@@ -12,15 +12,15 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { styled } from "@mui/system";
 import Stack from "@mui/material/Stack";
-import { createProductApi } from "../../Service/UserService";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { createProductApi } from "../../Service/ProductService";
 
 const CreateProduct = () => {
   const Category = ["Shirt", "T-shirt", "Jeans", "Trouser", "Jacket"];
   const navigate = useNavigate();
   const handleCreate = (value, resetForm) => {
-    console.log(value, "aa");
+    console.log(value, "accca");
     createProductApi(value)
       .then((response) => {
         toast.success("New Product has been Added Successfully");
