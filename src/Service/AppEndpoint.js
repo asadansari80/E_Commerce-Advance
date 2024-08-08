@@ -6,7 +6,11 @@ export const APP_ENPOINT = {
   updatePasswordService: "/password/update",
   updateProfileService: "/me/update",
   createproduct: "/admin/product/new",
-  getProducts: "/admin/products",
+  getAdminProducts: "/admin/products",
+  getProducts: "/products",
+  getProductDetails: "/Product/",
+  productUpdate: "/admin/product/",
+  productDelete: "/admin/product/",
 };
 
 export const generateUrl = (endpoint) => {

@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./Page/ForgotPassword/ForgotPassword";
 import Setting from "./Page/Setting/Settings";
 import CreateProduct from "./Page/CreateProduct/CreateProduct";
+import EditProduct from "./Page/EditProduct/EditProduct";
 
 function App() {
   // console.log(window,"nnn");
@@ -33,6 +34,7 @@ function App() {
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/product/new" element={<CreateProduct />} />
+          <Route path="/Product/:productId/edit" element={<EditProduct />} />
         </Route>
       </Routes>
     </Router>
