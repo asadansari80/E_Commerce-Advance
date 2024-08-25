@@ -11,6 +11,10 @@ export const APP_ENPOINT = {
   getProductDetails: "/Product/",
   productUpdate: "/admin/product/",
   productDelete: "/admin/product/",
+  createProductReview: "/review/",
+  getProductReviews: "/reviews",
+  deleteProductReview: "/reviews",
+  orderAPI: "/order/new",
 };
 
 export const generateUrl = (endpoint) => {

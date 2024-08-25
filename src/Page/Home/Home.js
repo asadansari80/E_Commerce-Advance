@@ -1,6 +1,5 @@
 import { Box, Container } from "@mui/material";
 import React from "react";
-import Navbar from "../Navbar/Navbar";
 import Navbar2 from "../Navbar/Navbar2";
 import AdminProductTable from "../AdminProductTable/AdminProductTable";
 import ProductCard from "../ProductCard/ProductCard";

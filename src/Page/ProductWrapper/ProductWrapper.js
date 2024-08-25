@@ -19,6 +19,7 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router-dom";
 
 const categoryItem = ["", "Shirt", "T-Shirt", "Jeans", "Trousers", "Jakets"];
 const ProductWrapper = () => {
@@ -27,7 +28,8 @@ const ProductWrapper = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState({ minPrice: "", maxPrice: "" });
-  console.log(price);
+  // console.log(price);
+  const navigate = useNavigate();
 
   const getProductFromBackend = (pageNo, search, category, price) => {
     getProductsService(pageNo, search, category, price)
@@ -36,6 +38,10 @@ const ProductWrapper = () => {
         setProductData(response.data);
       })
       .catch((error) => {});
+  };
+
+  const navigateToProductPage = (productId) => {
+    navigate(`/product/${productId}`);
   };
 
   const handleSearch = (value) => {
@@ -148,7 +154,7 @@ const ProductWrapper = () => {
               placeholder="MIN price"
               variant="outlined"
               onChange={(event) => {
-                console.log(event.target.value, "zz");
+                // console.log(event.target.value, "zz");
                 setPrice({ ...price, minPrice: event.target.value });
               }}
               value={price.minPrice}
@@ -211,9 +217,9 @@ const ProductWrapper = () => {
         justifyContent={"space-around"}
       >
         {productData.products?.map((data) => {
-          // console.log(data,"cc");
+          // console.log(data, "vv");
           return (
-            <Box>
+            <Box onClick={() => navigateToProductPage(data._id)} key={data._id}>
               <ProductCard
                 name={data.name}
                 description={data.description}

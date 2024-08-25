@@ -6,45 +6,79 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Logout, Setting } from "../../Component/UserMenu";
 import { useNavigate } from "react-router-dom";
-
-// const pages = ["Products", "Pricing", "Blog"];
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { Button, Popover } from "@mui/material";
+import { getProductDetails } from "../../Service/ProductService";
+import { useDispatch, useSelector } from "react-redux";
+import { removeProductFromCart } from "../../Redux/cartSlice";
 
 const settings = ["Profile", <Setting />, <Logout />];
 
-function Navbar2() {
+function Navbar2(props) {
+  const userDetails = useSelector((state) => state.user.user);
+  // console.log(state);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  // const cart = JSON.parse(localStorage.getItem("cart")) || {};
+  // console.log(cart,"ll");
+  const cartItemCount = useSelector((state) => state.cart.quantity);
+  const productId = useSelector((state) => state.cart.product);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  // const userDetails = localStorage.getItem("user");
+  // const parseUserDetails = JSON.parse(userDetails);
 
-  const userDetails = localStorage.getItem("user");
-  // console.log(userDetails,"ee");
-  const parseUserDetails = JSON.parse(userDetails);
-  // console.log(parseUserDetails,"bb");
+  const [productDetail, setProductDetail] = React.useState([]);
 
+  // console.log(productId, "ff");
+React.useEffect(() => {
+    const fetchProductDetails = async () => {
+      const productDetailsFromApi = productId.map((details) => {
+        // console.log(id);
+        return getProductDetails(details.id);
+      });
+      // console.log(productDetailsFromApi);
+      const product = Promise.all(productDetailsFromApi).then((response) => {
+        // console.log(response);
+        setProductDetail(response);
+      });
+    };
+    fetchProductDetails();
+  }, [productId]);
+
+  const handleRemove = (productId) => {
+    dispatch(removeProductFromCart(productId));
+  };
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <AppBar
@@ -86,46 +120,13 @@ function Navbar2() {
             >
               <MenuIcon />
             </IconButton>
-            {/* <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu> */}
           </Box>
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
 
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {/* {pages.map((page) => (
-              <Button
-              key={page}
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-              >
-              {page}
-              </Button>
-            ))} */}
-          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
+
           {token ? (
-            parseUserDetails.role === "admin" ? (
+            userDetails.role === "admin" ? (
               <Typography
                 variant="caption"
                 fontSize="20px"
@@ -141,6 +142,39 @@ function Navbar2() {
               </Typography>
             ) : null
           ) : null}
+
+          <Box sx={{ px: "20px" }}>
+            {" "}
+            {token && userDetails.role === "user" ? (
+              <Box
+                sx={{ position: "relative", cursor: "pointer" }}
+                onClick={handleClick}
+              >
+                {cartItemCount > 0 ? (
+                  <Box
+                    sx={{
+                      height: "16px",
+                      width: "16px",
+                      backgroundColor: "yellowgreen",
+                      borderRadius: "50%",
+                      position: "absolute",
+                      right: "1px",
+                      top: "0",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      fontSize: "9px",
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                  >
+                    {cartItemCount}
+                  </Box>
+                ) : null}
+                <AiOutlineShoppingCart size={30} />
+              </Box>
+            ) : null}
+          </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
@@ -164,16 +198,97 @@ function Navbar2() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settings.map((setting, index) => (
+                <MenuItem key={index} onClick={handleCloseUserMenu}>
+                  {typeof setting === "string" ? (
+                    <Typography textAlign="center">{setting}</Typography>
+                  ) : (
+                    setting
+                  )}
                 </MenuItem>
               ))}
             </Menu>
           </Box>
         </Toolbar>
       </Box>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        <Box>
+          {productDetail.map((product) => {
+            // console.log(product.data.product, "kk");
+            return (
+              <Box
+                display="flex"
+                alignItems="baseline"
+                justifyContent="space-around"
+                fontSize="10px"
+                sx={{ p: 1, borderBottom: "1px solid lightgray" }}
+              >
+                {" "}
+                <Box>
+                  <Typography>{product.data.product.name}</Typography>
+                  <Typography
+                    variant="subtitle"
+                    color="GrayText"
+                    fontSize="10px"
+                  >
+                    {product.data.product.description}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant="h5"
+                    fontSize="10px"
+                    sx={{
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                      color: "orange",
+                    }}
+                    onClick={() => {
+                      handleRemove(product.data.product._id);
+                      // console.log(product.data.product,"77");
+                    }}
+                  >
+                    remove
+                  </Typography>
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
+        <Box textAlign="center">
+          <Button
+            type="button"
+            variant="contained"
+            sx={{
+              backgroundColor: "gold",
+              fontWeight: "bold",
+              marginY: "10px",
+              fontSize: "10px",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "gold",
+                color: "black",
+              },
+            }}
+            onClick={() => {
+              navigate("/CheckoutPage");
+            }}
+          >
+            Checkout
+          </Button>
+        </Box>
+      </Popover>
     </AppBar>
   );
 }
+
 export default Navbar2;

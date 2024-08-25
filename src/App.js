@@ -9,6 +9,8 @@ import ForgotPassword from "./Page/ForgotPassword/ForgotPassword";
 import Setting from "./Page/Setting/Settings";
 import CreateProduct from "./Page/CreateProduct/CreateProduct";
 import EditProduct from "./Page/EditProduct/EditProduct";
+import ProductPage from "./Page/ProductPage/ProductPage";
+import CheckoutPage from "./Page/Checkout/CheckoutPage";
 
 function App() {
   // console.log(window,"nnn");
@@ -35,6 +37,9 @@ function App() {
           <Route path="/setting" element={<Setting />} />
           <Route path="/product/new" element={<CreateProduct />} />
           <Route path="/Product/:productId/edit" element={<EditProduct />} />
+          <Route path="/Product/:productId" element={<ProductPage />} />
+          <Route path="/CheckoutPage" element={<CheckoutPage />} />
+          {/* <Route path="/order/new" element={<CheckoutPage />} /> */}
         </Route>
       </Routes>
     </Router>

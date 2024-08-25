@@ -95,3 +95,75 @@ export const productDelete = (productId) => {
     },
   });
 };
+
+export const CreateProductReviewAPI = (star, review, productId) => {
+  const payload = {
+    rating: star,
+    comment: review,
+    productId: productId,
+  };
+  const token = localStorage.getItem("token");
+  return axios.put(generateUrl(APP_ENPOINT.createProductReview), payload, {
+    headers: {
+      Authorization: `${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const ProductReviewAPI = (productId) => {
+  const token = localStorage.getItem("token");
+  return axios.get(
+    generateUrl(APP_ENPOINT.getProductReviews) + `?id=${productId}`,
+    {
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+export const DeleteProductReviewAPI = (productId, id) => {
+  const token = localStorage.getItem("token");
+  return axios.delete(
+    generateUrl(APP_ENPOINT.deleteProductReview) +
+      `?productId=${productId}&id=${id}`,
+    {
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+export const OrderApi = ({
+  shippingInfo,
+  orderItems,
+  user,
+  paymentInfo,
+  itemsPrice,
+  taxPrice,
+  shippingPrice,
+  totalPrice,
+}) => {
+  const payload = {
+    shippingInfo,
+    orderItems,
+    user,
+    paymentInfo,
+    itemsPrice,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
+  };
+
+  const token = localStorage.getItem("token");
+
+  return axios.post(generateUrl(APP_ENPOINT.orderAPI), payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+};

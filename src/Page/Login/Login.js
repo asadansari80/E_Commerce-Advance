@@ -4,10 +4,13 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import { userLogin } from "../../Service/UserService";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Redux/usersSlice";
 
 const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleForgetPassword = () => {
     navigate("/forgotpassword");
@@ -16,13 +19,14 @@ const Login = () => {
     // console.log(value,"yy");
     userLogin(value)
       .then((response) => {
-        // console.log(response,"www");
+        // console.log(response, "www");
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        dispatch(setUser(response.data.user));
+        // localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/");
       })
       .catch((error) => {
-        console.log(error, "cc");
+        // console.log(error, "cc");
         setError(error.response.data.message);
       });
   };
